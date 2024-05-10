@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CGPA and GPA Calculator</title>
+    <link rel="stylesheet" href="styl.css">
+</head>
+<body>
+    <div class="container">
+        <h1>CGPA and GPA Calculator</h1>
+        <div id="courses">
+            <!-- Course inputs will be added dynamically using JavaScript -->
+        </div>
+        <button id="addCourse">Add Course</button>
+        <button id="calculate">Calculate CGPA and GPA</button>
+        <div id="result"></div>
+    </div>
+
+</body>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const addButton = document.getElementById("addCourse");
+    const calculateButton = document.getElementById("calculate");
+    const coursesContainer = document.getElementById("courses");
+    const resultContainer = document.getElementById("result");
+
+    addButton.addEventListener("click", addCourse);
+    calculateButton.addEventListener("click", calculateCGPA);
+
+    function addCourse() {
+        const courseDiv = document.createElement("div");
+        courseDiv.innerHTML = `
+            <input type="text" placeholder="Course Name">
+            <input type="text" placeholder="Grade">
+            <input type="number" placeholder="Credit Hours">
+        `;
+        coursesContainer.appendChild(courseDiv);
+    }
+
+    function calculateCGPA() {
+        const courses = document.querySelectorAll("#courses > div");
+        let totalCredits = 0;
+        let totalGradePoints = 0;
+
+        courses.forEach(course => {
+            const grade = course.querySelector("input:nth-child(2)").value.toUpperCase();
+            const creditHours = parseInt(course.querySelector("input:nth-child(3)").value);
+            const gradePoint = getGradePoint(grade);
+
+            if (!isNaN(creditHours) && gradePoint !== -1) {
+                totalCredits += creditHours;
+                totalGradePoints += gradePoint * creditHours;
+            }
+        });
+
+        const cgpa = totalGradePoints / totalCredits;
+        const gpa = totalGradePoints / courses.length;
+
+        resultContainer.innerHTML = `
+            <p>CGPA: ${cgpa.toFixed(2)}</p>
+            <p>GPA: ${gpa.toFixed(2)}</p>
+        `;
+    }
+
+    function getGradePoint(grade) {
+        switch (grade) {
+            case "A":
+                return 4.0;
+            case "B":
+                return 3.0;
+            case "C":
+                return 2.0;
+            case "D":
+                return 1.0;
+            case "F":
+                return 0.0;
+            default:
+                return -1; // Invalid grade
+        }
+    }
+});
+
+</script>
+</html>
